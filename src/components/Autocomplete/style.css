@@ -1,0 +1,44 @@
+* {
+    font-family: Segoe UI;
+    font-size: 14px;
+}
+
+.autocomplete {
+    margin-top: 10px;
+}
+
+.autocomplete input{
+    border: 1px solid silver;
+    outline: none;
+    margin: 0;
+    background: #fff;
+}
+
+.autocomplete_result {
+    border: 1px solid silver;
+    border-top: 0;
+    position: absolute;
+    overflow: auto;
+    max-height: 93px;
+    background: #fff;
+    cursor: pointer;
+}
+
+.autocomplete input, .autocomplete_result {
+    width: 200px;
+    box-sizing: border-box;
+}
+
+.autocomplete input, .autocomplete_result > div {
+    padding: 4px;
+    margin: 0;
+    color: #000;
+}
+
+.autocomplete_result > div:nth-child(2n+1) {
+    background: #f6f6f6;
+}
+
+.autocomplete_result > div:hover {
+    background: #e5e5e5;
+}
