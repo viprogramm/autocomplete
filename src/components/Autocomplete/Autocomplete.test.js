@@ -94,7 +94,7 @@ describe("Autocomplete component", () => {
     });
   });
 
-  test("clear input on outside click", () => {
+  test("do not clear input on outside click if nothing to choose in search list", () => {
     const wrapper = mount(
       <div>
         <Autocomplete getItems={getItems} onChange={() => {}} />
