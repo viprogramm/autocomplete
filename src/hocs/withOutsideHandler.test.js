@@ -26,7 +26,7 @@ describe("withOutsideHandler coponent", () => {
         const initReactErrorLogging = Error.prototype.suppressReactErrorLogging;
 
         try {
-          Error.prototype.suppressReactErrorLogging = true;
+          Error.prototype.suppressReactErrorLogging = true; // eslint-disable-line
 
           const wrapper = mount(<WrappedComponent />, {
             attachTo: document.querySelector("#app")
@@ -34,7 +34,7 @@ describe("withOutsideHandler coponent", () => {
 
           wrapper.detach();
         } finally {
-          Error.prototype.suppressReactErrorLogging = initReactErrorLogging;
+          Error.prototype.suppressReactErrorLogging = initReactErrorLogging; // eslint-disable-line
         }
       }).toThrow(
         'Component "Component" does not define "onOutsideClick" method.'
