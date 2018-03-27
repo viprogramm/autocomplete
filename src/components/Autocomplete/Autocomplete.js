@@ -5,6 +5,7 @@ import "./style.css";
 import debounce from "lodash/debounce";
 import { oneOfType, object, string, func } from "prop-types";
 import List from "../List/List";
+import DefaultValueComponent from "../DefaultValueComponent/DefaultValueComponent";
 import withOutsideHandler from "../../hocs/withOutsideHandler";
 
 class Autocomplete extends React.Component {
@@ -77,11 +78,11 @@ class Autocomplete extends React.Component {
   }
 
   render() {
-    const { className = "" } = this.props;
+    const { className = "", valueComponent: ValueComponent } = this.props;
     const { text, items } = this.state;
     return (
       <div className={`autocomplete ${className}`}>
-        <input type="text" value={text} onChange={this.onChange} />
+        <ValueComponent value={text} onChange={this.onChange} />
         {this.shouldShowList() && (
           <List
             className="autocomplete_result"
@@ -99,12 +100,14 @@ Autocomplete.propTypes = {
   value: oneOfType([string, object]),
   fieldName: string,
   onChange: func.isRequired,
-  getItems: func.isRequired
+  getItems: func.isRequired,
+  valueComponent: func
 };
 
 Autocomplete.defaultProps = {
   value: "",
-  fieldName: ""
+  fieldName: "",
+  valueComponent: DefaultValueComponent
 };
 
 export default withOutsideHandler(Autocomplete);
