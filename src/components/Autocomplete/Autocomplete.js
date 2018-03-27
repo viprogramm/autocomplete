@@ -49,8 +49,7 @@ class Autocomplete extends React.Component {
   onChange = e => {
     const value = e.target.value;
     this.setState({ text: value });
-    // this.debouncedGetItems(value);
-    this.getItems(value);
+    this.debouncedGetItems(value);
   };
 
   onChooseItem = item => e => {

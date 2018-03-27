@@ -12,6 +12,8 @@ const getItems = value => {
   return data.filter(v => v.includes(value));
 };
 
+jest.useFakeTimers();
+
 describe("Autocomplete component", () => {
   beforeAll(() => {
     const div = document.createElement("div");
@@ -30,6 +32,8 @@ describe("Autocomplete component", () => {
     );
 
     wrapper.find("input").simulate("change", { target: { value: "e" } });
+
+    jest.runAllTimers();
 
     setImmediate(() => {
       wrapper.update();
@@ -82,6 +86,8 @@ describe("Autocomplete component", () => {
 
     wrapper.find("input").simulate("change", { target: { value: "e" } });
 
+    jest.runAllTimers();
+
     setImmediate(() => {
       wrapper.update();
 
@@ -105,6 +111,8 @@ describe("Autocomplete component", () => {
 
     const text = "test text";
     wrapper.find("input").simulate("change", { target: { value: text } });
+
+    jest.runAllTimers();
 
     expect(wrapper.find("input").get(0).props.value).toBe(text);
 
