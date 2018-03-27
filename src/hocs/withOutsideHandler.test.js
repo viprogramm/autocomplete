@@ -23,15 +23,19 @@ describe("withOutsideHandler coponent", () => {
 
         const WrappedComponent = withOutsideHandler(Component);
 
-        const wrapper = mount(
-          <div>
-            <WrappedComponent />
-            <div className="target">!</div>
-          </div>,
-          { attachTo: document.querySelector("#app") }
-        );
+        const initReactErrorLogging = Error.prototype.suppressReactErrorLogging;
 
-        wrapper.detach();
+        try {
+          Error.prototype.suppressReactErrorLogging = true;
+
+          const wrapper = mount(<WrappedComponent />, {
+            attachTo: document.querySelector("#app")
+          });
+
+          wrapper.detach();
+        } finally {
+          Error.prototype.suppressReactErrorLogging = initReactErrorLogging;
+        }
       }).toThrow(
         'Component "Component" does not define "onOutsideClick" method.'
       );
@@ -41,7 +45,6 @@ describe("withOutsideHandler coponent", () => {
   describe('Capture "click" events', () => {
     test("outside click events of wrapped component", () => {
       const spy = sinon.spy();
-
       class Component extends React.Component {
         onOutsideClick = () => {
           spy();
