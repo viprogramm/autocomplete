@@ -113,6 +113,6 @@ describe("Autocomplete component", () => {
       .dispatchEvent(new window.MouseEvent("click"));
     wrapper.update();
 
-    expect(wrapper.find("input").get(0).props.value).toBe("");
+    expect(wrapper.find("input").get(0).props.value).toBe("test text");
   });
 });

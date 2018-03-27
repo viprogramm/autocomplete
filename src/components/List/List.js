@@ -1,10 +1,8 @@
 import React from "react";
 
-import { func, array } from "prop-types";
+import { func, array, string } from "prop-types";
 
-const List = props => {
-  const { items, onClick, className = "", itemRender: ItemRender } = props;
-
+const List = ({ items, onClick, className, itemRender: ItemRender }) => {
   return (
     <div className={className}>
       {items.map((item, index) => {
@@ -30,58 +28,15 @@ const List = props => {
 
 List.propTypes = {
   items: array,
-  onClick: func
+  onClick: func,
+  className: string,
+  itemRender: func
 };
 
 List.defaultProps = {
   items: [],
-  onClick: () => () => {}
+  onClick: () => () => {},
+  className: ""
 };
 
 export default List;
-
-{
-  /*<div className={className}>*/
-}
-{
-  /*{items.map((item, index) => {*/
-}
-{
-  /*return (*/
-}
-{
-  /*<div key={item.id || index} onClick={onClick(item)}>*/
-}
-{
-  /*{typeof ItemRender === "function" ? (*/
-}
-{
-  /*<ItemRender {...item} />*/
-}
-{
-  /*) : item.name ? (*/
-}
-{
-  /*item.name*/
-}
-{
-  /*) : (*/
-}
-{
-  /*item*/
-}
-{
-  /*)}*/
-}
-{
-  /*</div>*/
-}
-{
-  /*);*/
-}
-{
-  /*})}*/
-}
-{
-  /*</div>*/
-}
