@@ -42,6 +42,10 @@ class Autocomplete extends React.Component {
     this.getItems(value);
   }, 200);
 
+  shouldShowList() {
+    return this.state.items.length > 0;
+  }
+
   onChange = e => {
     const value = e.target.value;
     this.setState({ text: value });
@@ -55,7 +59,9 @@ class Autocomplete extends React.Component {
   };
 
   onOutsideClick = () => {
-    this.clearAutocomplete();
+    if (this.shouldShowList()) {
+      this.clearAutocomplete();
+    }
   };
 
   clearAutocomplete = () => {
@@ -77,7 +83,7 @@ class Autocomplete extends React.Component {
     return (
       <div className={`autocomplete ${className}`}>
         <input type="text" value={text} onChange={this.onChange} />
-        {items.length > 0 && (
+        {this.shouldShowList() && (
           <List
             className="autocomplete_result"
             items={items}
