@@ -1,43 +1,27 @@
 import data from "../stub/data";
 
-let timer;
-
-const abort = () => {
-  clearTimeout(timer);
-};
+let lastReject;
 
 export const search = query => {
-  console.log("search", query);
+  const promise = new Promise((resolve, reject) => {
+    if (query === "" || query === undefined) {
+      return resolve([]);
+    }
 
-  abort();
-  if (query === "" || query === undefined) {
-    return [];
-  }
-  return new Promise((resolve, reject) => {
-    timer = setTimeout(() => {
+    lastReject = reject;
+
+    setTimeout(() => {
       const regex = new RegExp(query, "i");
       const items = data.filter(currency => regex.test(currency.name));
       resolve(items);
-    }, 500);
+    }, 200);
   });
-};
 
-// export const search = (time = 500) => {
-//   let timers = [];
-//
-//   const abort = () => {
-//     timers.forEach(timer => clearTimeout(timer));
-//   };
-//
-//   return query => {
-//     return new Promise((resolve, reject) => {
-//       const timer = setTimeout(() => {
-//         const regex = new RegExp(query, "i");
-//         const items = data.filter(currency => regex.test(currency.name));
-//         resolve({ items, abort });
-//       }, time);
-//
-//       timers = [...timers, timer];
-//     });
-//   };
-// };
+  promise.abort = () => {
+    if (typeof lastReject === "function") {
+      lastReject("Previous request was canceled");
+    }
+  };
+
+  return promise;
+};
