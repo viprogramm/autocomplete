@@ -2,6 +2,7 @@ import React from "react";
 
 import { mount } from "enzyme";
 import Autocomplete from "./Autocomplete";
+import DefaultValueComponent from "../DefaultValueComponent/DefaultValueComponent";
 
 const data = ["etc", "eth", "btc"];
 
@@ -122,5 +123,34 @@ describe("Autocomplete component", () => {
     wrapper.update();
 
     expect(wrapper.find("input").get(0).props.value).toBe("test text");
+  });
+
+  test("custom value component", () => {
+    const value = "Test value";
+    const text = "This is custom value component";
+
+    const ValueComponent = ({ value }) => {
+      return (
+        <div>
+          {text}
+          <DefaultValueComponent value={value} onChange={() => {}} />
+        </div>
+      );
+    };
+
+    const wrapper = mount(
+      <div>
+        <Autocomplete
+          getItems={getItems}
+          onChange={() => {}}
+          valueComponent={ValueComponent}
+          value={value}
+        />
+      </div>,
+      { attachTo: document.querySelector("#app") }
+    );
+
+    expect(wrapper.text()).toBe(text);
+    expect(wrapper.find("input").get(0).props.value).toBe(value);
   });
 });
