@@ -13,32 +13,43 @@ describe("withOutsideHandler coponent", () => {
   });
 
   describe("Child component does not define onOutsideClick handler", () => {
-    test("throws an error", () => {
-      expect(() => {
-        class Component extends React.Component {
-          render() {
-            return <div />;
-          }
+    test("catch an error", () => {
+      const spy = sinon.spy();
+
+      class ErrorBoundary extends React.Component {
+        componentDidCatch(error) {
+          spy(error.message);
         }
 
-        const WrappedComponent = withOutsideHandler(Component);
-
-        const initReactErrorLogging = Error.prototype.suppressReactErrorLogging;
-
-        try {
-          Error.prototype.suppressReactErrorLogging = true; // eslint-disable-line
-
-          const wrapper = mount(<WrappedComponent />, {
-            attachTo: document.querySelector("#app")
-          });
-
-          wrapper.detach();
-        } finally {
-          Error.prototype.suppressReactErrorLogging = initReactErrorLogging; // eslint-disable-line
+        render() {
+          return this.props.children;
         }
-      }).toThrow(
-        'Component "Component" does not define "onOutsideClick" method.'
+      }
+
+      class Component extends React.Component {
+        render() {
+          return <div />;
+        }
+      }
+
+      const WrappedComponent = withOutsideHandler(Component);
+
+      const wrapper = mount(
+        <ErrorBoundary>
+          <WrappedComponent />
+        </ErrorBoundary>,
+        {
+          attachTo: document.querySelector("#app")
+        }
       );
+
+      wrapper.detach();
+
+      expect(
+        spy.calledWith(
+          `Component "Component" does not define "onOutsideClick" method.`
+        )
+      ).toBeTruthy();
     });
   });
 
