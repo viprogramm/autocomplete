@@ -1,7 +1,9 @@
 import React from "react";
-
-import { mount } from "enzyme";
+import { shallow } from "enzyme";
 import Autocomplete from "./Autocomplete";
+
+import sinon from "sinon";
+import List from "../List/List";
 import DefaultValueComponent from "../DefaultValueComponent/DefaultValueComponent";
 
 const data = ["etc", "eth", "btc"];
@@ -16,141 +18,122 @@ const getItems = value => {
 jest.useFakeTimers();
 
 describe("Autocomplete component", () => {
-  beforeAll(() => {
-    const div = document.createElement("div");
-    div.setAttribute("id", "app");
-    document.body.appendChild(div);
-  });
+  test("change input's value", () => {
+    const onChangeValue = sinon.spy();
+    const onGetItems = sinon.spy();
 
-  test("find and choose currency", done => {
-    const chooseValue = jest.fn();
-
-    const wrapper = mount(
-      <div>
-        <Autocomplete getItems={getItems} onChange={chooseValue} />
-      </div>,
-      { attachTo: document.querySelector("#app") }
+    const wrapper = shallow(
+      <Autocomplete
+        getItems={onGetItems}
+        onChange={() => {}}
+        onChangeValue={onChangeValue}
+      />
     );
 
-    wrapper.find("input").simulate("change", { target: { value: "e" } });
-
-    jest.runAllTimers();
-
-    setImmediate(() => {
-      wrapper.update();
-      expect(wrapper.html()).toMatch(
-        /<div class="autocomplete_result"><div>etc<\/div><div>eth<\/div><\/div>/
-      );
-
-      wrapper
-        .find("div.autocomplete_result > div")
-        .first(1)
-        .simulate("click");
-
-      expect(chooseValue).toHaveBeenCalledWith("etc");
-
-      expect(wrapper.html()).not.toMatch(
-        /<div class="autocomplete_result"><div>etc<\/div><div>eth<\/div><\/div>/
-      );
-
-      wrapper.detach();
-      done();
-    });
-  });
-
-  test("custom item render", done => {
-    const getItems = query => {
-      if (query === "" || query === undefined) {
-        return [];
-      }
-      const data = [
-        { id: 1, name: "ETH", value: 20 },
-        { id: 2, name: "ETC", value: 2.4 },
-        { id: 3, name: "BTC", value: 1.05 }
-      ];
-      const regex = new RegExp(query, "i");
-      return data.filter(currency => regex.test(currency.name));
-    };
-
-    const ItemRender = ({ name, value }) => `${name} (ballance: ${value})`;
-
-    const wrapper = mount(
-      <div>
-        <Autocomplete
-          getItems={getItems}
-          onChange={() => {}}
-          itemRender={ItemRender}
-        />
-      </div>,
-      { attachTo: document.querySelector("#app") }
-    );
-
-    wrapper.find("input").simulate("change", { target: { value: "e" } });
-
-    jest.runAllTimers();
-
-    setImmediate(() => {
-      wrapper.update();
-
-      expect(wrapper.html()).toMatch(
-        /<div class="autocomplete_result"><div>ETH \(ballance: 20\)<\/div><div>ETC \(ballance: 2.4\)<\/div><\/div>/
-      );
-
-      wrapper.detach();
-      done();
-    });
-  });
-
-  test("do not clear input on outside click if nothing to choose in search list", () => {
-    const wrapper = mount(
-      <div>
-        <Autocomplete getItems={getItems} onChange={() => {}} />
-        <div className="target">!</div>
-      </div>,
-      { attachTo: document.querySelector("#app") }
-    );
-
-    const text = "test text";
+    const text = "e";
     wrapper.find("input").simulate("change", { target: { value: text } });
 
+    wrapper.update();
     jest.runAllTimers();
 
-    expect(wrapper.find("input").get(0).props.value).toBe(text);
-
-    document
-      .querySelector(".target")
-      .dispatchEvent(new window.MouseEvent("click"));
-    wrapper.update();
-
-    expect(wrapper.find("input").get(0).props.value).toBe("test text");
+    expect(onChangeValue.calledWith(text)).toBeTruthy();
+    expect(onGetItems.calledWith(text)).toBeTruthy();
   });
 
-  test("custom value component", () => {
-    const value = "Test value";
-    const text = "This is custom value component";
+  test("select search item and click on value component", () => {
+    const onChange = sinon.spy();
+    const onGetItems = sinon.spy();
 
-    const ValueComponent = ({ value }) => {
-      return (
-        <div>
-          {text}
-          <DefaultValueComponent value={value} onChange={() => {}} />
-        </div>
-      );
-    };
+    const items = ["foo", "bar", "baz"];
 
-    const wrapper = mount(
-      <div>
-        <Autocomplete
-          getItems={getItems}
-          onChange={() => {}}
-          valueComponent={ValueComponent}
-          value={value}
-        />
-      </div>,
-      { attachTo: document.querySelector("#app") }
+    const wrapper = shallow(
+      <Autocomplete
+        getItems={onGetItems}
+        onChange={onChange}
+        onChangeValue={() => {}}
+        items={items}
+      />
     );
 
-    expect(wrapper.text()).toBe(text);
-    expect(wrapper.find("input").get(0).props.value).toBe(value);
+    expect(wrapper.find(List).prop("items")).toBe(items);
+    expect(wrapper.find("input").length).toBe(1);
+    expect(wrapper.find(DefaultValueComponent).length).toBe(0);
+
+    wrapper
+      .find(List)
+      .dive()
+      .find(".list.autocomplete_result .list-item")
+      .first()
+      .simulate("mousedown");
+
+    wrapper.update();
+
+    expect(onChange.calledWith(items[0])).toBeTruthy();
+    expect(onGetItems.calledWith("")).toBeTruthy();
+
+    expect(wrapper.find("input").length).toBe(0);
+    expect(wrapper.find(DefaultValueComponent).length).toBe(1);
+
+    wrapper
+      .find(".autocomplete > div")
+      .first()
+      .simulate("click");
+
+    wrapper.update();
+
+    expect(wrapper.find("input").length).toBe(1);
+    expect(wrapper.find(DefaultValueComponent).length).toBe(0);
+  });
+
+  test("clear input on blur if can to choose currency in search list", () => {
+    const onChangeValue = sinon.spy();
+    const onGetItems = sinon.spy();
+
+    const items = ["foo", "bar", "baz"];
+    const text = "test text";
+
+    const wrapper = shallow(
+      <Autocomplete
+        getItems={onGetItems}
+        onChange={() => {}}
+        onChangeValue={onChangeValue}
+        items={items}
+        value={text}
+      />
+    );
+
+    expect(wrapper.find("input").prop("value")).toBe(text);
+    expect(wrapper.find(List).prop("items")).toEqual(items);
+
+    wrapper.find("input").simulate("blur");
+    wrapper.update();
+
+    expect(onGetItems.calledWith("")).toBeTruthy();
+    expect(onChangeValue.calledWith("")).toBeTruthy();
+  });
+
+  test("not clear input on blur click if nothing to choose in search list", () => {
+    const onChangeValue = sinon.spy();
+    const onGetItems = sinon.spy();
+
+    const text = "test text";
+
+    const wrapper = shallow(
+      <Autocomplete
+        getItems={onGetItems}
+        onChange={() => {}}
+        onChangeValue={onChangeValue}
+        value={text}
+      />
+    );
+
+    expect(wrapper.find("input").prop("value")).toBe(text);
+    expect(wrapper.find(List).prop("items")).toEqual([]);
+
+    wrapper.find("input").simulate("blur");
+    wrapper.update();
+
+    expect(onGetItems.calledWith("")).toBeFalsy();
+    expect(onChangeValue.calledWith("")).toBeFalsy();
   });
 });

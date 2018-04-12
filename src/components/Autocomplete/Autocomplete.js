@@ -1,85 +1,106 @@
 import React from "react";
-
-import "./style.css";
-
+import _debounce from "lodash/debounce";
 import { string, func, array } from "prop-types";
 import List from "../List/List";
 import DefaultValueComponent from "../DefaultValueComponent/DefaultValueComponent";
-import withOutsideHandler from "../../hocs/withOutsideHandler";
-import withPrepareValueProp from "../../hocs/withPrepareValueProp";
-import withGetItems from "../../hocs/withGetItems";
+
+import "./style.css";
 
 class Autocomplete extends React.Component {
+  state = {
+    editMode: true
+  };
+
+  debounceGetItems = _debounce(this.props.getItems, 200);
+
   componentDidMount() {
     this.props.getItems(this.props.value);
   }
 
-  shouldShowList() {
-    return this.props.items.length > 0;
-  }
+  turnOnEditMode = () => {
+    this.setState({
+      editMode: true
+    });
+  };
+
+  turnOffEditMode = () => {
+    this.setState({
+      editMode: false
+    });
+  };
 
   clearInput() {
-    this.props.clearValue();
+    this.props.onChangeValue("");
   }
 
   hideResultsList() {
-    this.props.clearItems();
+    this.props.getItems("");
   }
 
-  clearAutocomplete = () => {
-    this.clearInput();
-    this.hideResultsList();
-  };
-
-  onChooseItem = item => e => {
-    this.hideResultsList();
-    this.props.onChange(item);
-  };
-
-  onOutsideClick = () => {
-    const isListShown = this.shouldShowList();
-    if (isListShown) {
-      this.clearAutocomplete();
+  onBlur = () => {
+    if (this.props.items.length > 0) {
+      this.clearInput();
+      this.hideResultsList();
     }
   };
 
-  onChangeValue = e => {
-    const { value } = e.target;
-    this.props.changeValue(value);
-    this.props.getItems(value);
+  onSelectItem = item => e => {
+    this.hideResultsList();
+    this.turnOffEditMode();
+    this.props.onChange(item);
   };
 
+  onChange = e => {
+    const { value } = e.target;
+    this.props.onChangeValue(value);
+    this.debounceGetItems(value);
+  };
+
+  renderValueComponent() {
+    const { editMode } = this.state;
+    const { value, valueComponent: ValueComponent } = this.props;
+    return editMode ? (
+      <input
+        type="text"
+        value={value}
+        onChange={this.onChange}
+        onBlur={this.onBlur}
+      />
+    ) : (
+      <div style={{ display: "inline-block" }} onClick={this.turnOnEditMode}>
+        <ValueComponent value={value} />
+      </div>
+    );
+  }
+
   render() {
-    const {
-      className,
-      valueComponent: ValueComponent,
-      value,
-      items,
-      itemRender
-    } = this.props;
+    const { className, items, itemRender } = this.props;
     return (
       <div className={`autocomplete ${className}`}>
-        <ValueComponent value={value} onChange={this.onChangeValue} />
-        {this.shouldShowList() && (
-          <List
-            className="autocomplete_result"
-            items={items}
-            onClick={this.onChooseItem}
-            itemRender={itemRender}
-          />
-        )}
+        {this.renderValueComponent()}
+        <List
+          className="autocomplete_result"
+          items={items}
+          onMouseDown={this.onSelectItem}
+          itemRender={itemRender}
+        />
       </div>
     );
   }
 }
 
 Autocomplete.propTypes = {
-  items: array,
-  value: string,
   className: string,
+
   onChange: func.isRequired,
+
+  value: string,
+  valueComponent: func,
+  onChangeValue: func.isRequired,
+
+  items: array,
   getItems: func.isRequired,
-  valueComponent: func
+  itemRender: func
 };
 
 Autocomplete.defaultProps = {
@@ -89,6 +110,4 @@ Autocomplete.defaultProps = {
   items: []
 };
 
-export default withPrepareValueProp(
-  withGetItems(withOutsideHandler(Autocomplete))
-);
+export default Autocomplete;

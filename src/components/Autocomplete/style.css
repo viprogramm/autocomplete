@@ -35,6 +35,17 @@
     color: #000;
 }
 
+.autocomplete .value-component {
+    width: 200px;
+    box-sizing: border-box;
+    padding: 4px;
+    margin: 0;
+    height: 27px;
+    background: cornflowerblue;
+    color: white;
+    border: 1px solid darkblue;
+}
+
 .autocomplete_result > div:nth-child(2n+1) {
     background: #f6f6f6;
 }

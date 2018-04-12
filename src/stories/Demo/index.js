@@ -1,6 +1,6 @@
 import React from "react";
 
-import Autocomplete from "../../components/Autocomplete/Autocomplete";
+import Autocomplete from "../../components/Autocomplete";
 import { search } from "../../api";
 
 const ItemRender = ({ value, name, ...props }) => (

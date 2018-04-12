@@ -1,23 +1,17 @@
 import React from "react";
 
-import Autocomplete from "../../components/Autocomplete/Autocomplete";
+import Autocomplete from "../../components/Autocomplete";
 import { search } from "../../api";
-
-let letters = "";
-
-function makeUnique(str) {
-  return String.prototype.concat(...new Set(str));
-}
-
-const customValueComponent = ({ value, onChange }) => {
-  letters = makeUnique(letters + value);
-
-  return (
-    <div>
-      <div>All uniq symbols that was written on input: {letters}</div>
-      <input value={value} onChange={onChange} />
-    </div>
-  );
+const styles = {
+  width: "200px",
+  border: "1px solid red",
+  cursor: "pointer",
+  height: "27px",
+  padding: "4px",
+  boxSizing: "border-box"
+};
+const customValueComponent = ({ value }) => {
+  return <div style={styles}>You choosen {value}!!!</div>;
 };
 
 class Demo extends React.Component {

@@ -8,4 +8,4 @@ import Demo3 from "./Demo3";
 storiesOf("Autocomplete", module)
   .add("simplie", () => <Demo />)
   .add("with custom item render", () => <Demo2 />)
-  .add("with custom input component", () => <Demo3 />);
+  .add("with custom value component", () => <Demo3 />);
