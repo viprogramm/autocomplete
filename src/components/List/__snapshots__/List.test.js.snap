@@ -2,20 +2,23 @@
 
 exports[`List with custom item renderer 1`] = `
 <div
-  className=""
+  className="list"
 >
   <div
-    onClick={[Function]}
+    className="list-item"
+    onMouseDown={[Function]}
   >
     ETH (ballance: 20)
   </div>
   <div
-    onClick={[Function]}
+    className="list-item"
+    onMouseDown={[Function]}
   >
     ETC (ballance: 2.4)
   </div>
   <div
-    onClick={[Function]}
+    className="list-item"
+    onMouseDown={[Function]}
   >
     BTC (ballance: 1.05)
   </div>
@@ -24,20 +27,23 @@ exports[`List with custom item renderer 1`] = `
 
 exports[`List with simple items and active class name 1`] = `
 <div
-  className="active"
+  className="list active"
 >
   <div
-    onClick={[Function]}
+    className="list-item"
+    onMouseDown={[Function]}
   >
     ETH
   </div>
   <div
-    onClick={[Function]}
+    className="list-item"
+    onMouseDown={[Function]}
   >
     ETC
   </div>
   <div
-    onClick={[Function]}
+    className="list-item"
+    onMouseDown={[Function]}
   >
     BTC
   </div>
@@ -46,28 +52,27 @@ exports[`List with simple items and active class name 1`] = `
 
 exports[`List with simple items and item renderer 1`] = `
 <div
-  className="active"
+  className="list active"
 >
   <div
-    onClick={[Function]}
+    className="list-item"
+    onMouseDown={[Function]}
   >
     name: [object Object]
   </div>
   <div
-    onClick={[Function]}
+    className="list-item"
+    onMouseDown={[Function]}
   >
     name: [object Object]
   </div>
   <div
-    onClick={[Function]}
+    className="list-item"
+    onMouseDown={[Function]}
   >
     name: [object Object]
   </div>
 </div>
 `;
 
-exports[`List without any props 1`] = `
-<div
-  className=""
-/>
-`;
+exports[`List without any props 1`] = `null`;
