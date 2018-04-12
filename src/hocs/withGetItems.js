@@ -1,6 +1,5 @@
 import React from "react";
 import { func } from "prop-types";
-import debounce from "lodash/debounce";
 import getDisplayName from "../helpers/getDisplayName";
 
 const withGetItems = Component => {
@@ -29,15 +28,7 @@ const withGetItems = Component => {
         this.setState({ items: response });
       }
 
-      this.setState({ prevResponse: response, value });
-    };
-
-    debouncedGetItems = debounce(value => {
-      this.getItems(value);
-    }, 200);
-
-    clearItems = () => {
-      this.setState({ items: [] });
+      this.setState({ prevResponse: response });
     };
 
     render() {
@@ -45,8 +36,7 @@ const withGetItems = Component => {
         <Component
           {...this.props}
           items={this.state.items}
-          clearItems={this.clearItems}
-          getItems={this.debouncedGetItems}
+          getItems={this.getItems}
         />
       );
     }

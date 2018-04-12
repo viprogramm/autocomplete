@@ -23,12 +23,8 @@ const withPrepareValueProp = Component => {
       }
     }
 
-    changeValue = value => {
+    onChangeValue = value => {
       this.setState({ value });
-    };
-
-    clearValue = () => {
-      this.setState({ value: "" });
     };
 
     render() {
@@ -36,8 +32,7 @@ const withPrepareValueProp = Component => {
         <Component
           {...this.props}
           value={this.state.value}
-          changeValue={this.changeValue}
-          clearValue={this.clearValue}
+          onChangeValue={this.onChangeValue}
         />
       );
     }
