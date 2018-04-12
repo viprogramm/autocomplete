@@ -1,13 +1,21 @@
 import React from "react";
+import classNames from "classnames";
 
 import { func, array, string } from "prop-types";
 
-const List = ({ items, onClick, className, itemRender: ItemRender }) => {
+const List = ({ items, onMouseDown, className, itemRender: ItemRender }) => {
+  if (items.length === 0) {
+    return null;
+  }
   return (
-    <div className={className}>
+    <div className={classNames("list", className)}>
       {items.map((item, index) => {
         return (
-          <div key={item.id || index} onClick={onClick(item)}>
+          <div
+            className="list-item"
+            key={item.id || index}
+            onMouseDown={onMouseDown(item)}
+          >
             {typeof item === "object" ? (
               typeof ItemRender === "function" ? (
                 <ItemRender {...item} />
@@ -28,14 +36,14 @@ const List = ({ items, onClick, className, itemRender: ItemRender }) => {
 
 List.propTypes = {
   items: array,
-  onClick: func,
+  onMouseDown: func,
   className: string,
   itemRender: func
 };
 
 List.defaultProps = {
   items: [],
-  onClick: () => () => {},
+  onMouseDown: () => () => {},
   className: ""
 };
 

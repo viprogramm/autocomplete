@@ -2,6 +2,8 @@ import React from "react";
 import renderer from "react-test-renderer";
 import List from "./List";
 import data from "../../stub/data";
+import { shallow } from "enzyme";
+import sinon from "sinon";
 
 describe("List", () => {
   test("without any props", () => {
@@ -36,5 +38,24 @@ describe("List", () => {
       .create(<List items={data} itemRender={itemRender} />)
       .toJSON();
     expect(tree).toMatchSnapshot();
+  });
+
+  test("mousedown", () => {
+    const spy = sinon.spy();
+    const wrapper = shallow(
+      <List
+        className="list"
+        items={data}
+        onMouseDown={item => e => spy(item)}
+      />
+    );
+
+    wrapper
+      .find(".list-item")
+      .first()
+      .simulate("mousedown");
+
+    expect(spy.callCount).toEqual(1);
+    expect(spy.calledWith(data[0])).toBeTruthy();
   });
 });
