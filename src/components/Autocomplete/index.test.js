@@ -136,7 +136,7 @@ describe("Autocomplete component with HOC's", () => {
     });
   });
 
-  test("clear input on blur if can to choose currency in search list", () => {
+  test("not clear input on blur if can to choose currency in search list", () => {
     const wrapper = mount(
       <Autocomplete getItems={getItems} onChange={() => {}} />
     );
@@ -154,11 +154,11 @@ describe("Autocomplete component with HOC's", () => {
     wrapper.find("input").simulate("blur");
     wrapper.update();
 
-    expect(wrapper.find("input").prop("value")).toBe("");
-    expect(wrapper.find(List).prop("items")).toEqual([]);
+    expect(wrapper.find("input").prop("value")).toBe(text);
+    expect(wrapper.find(List).prop("items")).toEqual([data[0], data[1]]);
   });
 
-  test("not clear input on blur click if nothing to choose in search list", () => {
+  test("clear input on blur click if nothing to choose in search list", () => {
     const wrapper = mount(
       <Autocomplete getItems={getItems} onChange={() => {}} />
     );
@@ -176,6 +176,6 @@ describe("Autocomplete component with HOC's", () => {
     wrapper.find("input").simulate("blur");
     wrapper.update();
 
-    expect(wrapper.find("input").prop("value")).toBe(text);
+    expect(wrapper.find("input").prop("value")).toBe("");
   });
 });

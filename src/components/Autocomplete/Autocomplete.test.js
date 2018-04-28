@@ -85,7 +85,7 @@ describe("Autocomplete component", () => {
     expect(wrapper.find(DefaultValueComponent).length).toBe(0);
   });
 
-  test("clear input on blur if can to choose currency in search list", () => {
+  test("not clear input on blur if can to choose currency in search list", () => {
     const onChangeValue = sinon.spy();
     const onGetItems = sinon.spy();
 
@@ -108,11 +108,11 @@ describe("Autocomplete component", () => {
     wrapper.find("input").simulate("blur");
     wrapper.update();
 
-    expect(onGetItems.calledWith("")).toBeTruthy();
-    expect(onChangeValue.calledWith("")).toBeTruthy();
+    expect(onGetItems.calledWith("")).toBeFalsy();
+    expect(onChangeValue.calledWith("")).toBeFalsy();
   });
 
-  test("not clear input on blur click if nothing to choose in search list", () => {
+  test("clear input on blur click if nothing to choose in search list", () => {
     const onChangeValue = sinon.spy();
     const onGetItems = sinon.spy();
 
@@ -133,7 +133,7 @@ describe("Autocomplete component", () => {
     wrapper.find("input").simulate("blur");
     wrapper.update();
 
-    expect(onGetItems.calledWith("")).toBeFalsy();
-    expect(onChangeValue.calledWith("")).toBeFalsy();
+    expect(onGetItems.calledWith("")).toBeTruthy();
+    expect(onChangeValue.calledWith("")).toBeTruthy();
   });
 });
