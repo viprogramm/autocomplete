@@ -38,7 +38,7 @@ class Autocomplete extends React.Component {
   }
 
   onBlur = () => {
-    if (this.props.items.length > 0) {
+    if (this.props.items.length === 0) {
       this.clearInput();
       this.hideResultsList();
     }
