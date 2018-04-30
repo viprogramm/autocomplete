@@ -8,7 +8,8 @@ import "./style.css";
 
 class Autocomplete extends React.Component {
   state = {
-    editMode: true
+    editMode: true,
+    canClearInput: false
   };
 
   debounceGetItems = _debounce(this.props.getItems, 200);
@@ -38,13 +39,14 @@ class Autocomplete extends React.Component {
   }
 
   onBlur = () => {
-    if (this.props.items.length === 0) {
+    if (this.state.canClearInput && this.props.items.length === 0) {
       this.clearInput();
       this.hideResultsList();
     }
   };
 
   onSelectItem = item => e => {
+    this.setState({ canClearInput: false });
     this.hideResultsList();
     this.turnOffEditMode();
     this.props.onChange(item);
@@ -52,6 +54,9 @@ class Autocomplete extends React.Component {
 
   onChange = e => {
     const { value } = e.target;
+    if (!this.state.canClearInput) {
+      this.setState({ canClearInput: true });
+    }
     this.props.onChangeValue(value);
     this.debounceGetItems(value);
   };

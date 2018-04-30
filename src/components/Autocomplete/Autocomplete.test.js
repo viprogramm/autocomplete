@@ -118,6 +118,9 @@ describe("Autocomplete component", () => {
       />
     );
 
+    wrapper.find("input").simulate("change", { target: { value: text } });
+    wrapper.update();
+
     expect(wrapper.find("input").prop("value")).toBe(text);
     expect(wrapper.find(List).prop("items")).toEqual([]);
 
@@ -126,5 +129,30 @@ describe("Autocomplete component", () => {
 
     expect(onGetItems.calledWith("")).toBeTruthy();
     expect(onChangeValue.calledWith("")).toBeTruthy();
+  });
+
+  test("not clear input on blur click if input was not changed and nothing to choose in search list", () => {
+    const onChangeValue = sinon.spy();
+    const onGetItems = sinon.spy();
+
+    const text = "test text";
+
+    const wrapper = shallow(
+      <Autocomplete
+        getItems={onGetItems}
+        onChange={() => {}}
+        onChangeValue={onChangeValue}
+        value={text}
+      />
+    );
+
+    expect(wrapper.find("input").prop("value")).toBe(text);
+    expect(wrapper.find(List).prop("items")).toEqual([]);
+
+    wrapper.find("input").simulate("blur");
+    wrapper.update();
+
+    expect(onGetItems.calledWith("")).toBeFalsy();
+    expect(onChangeValue.calledWith("")).toBeFalsy();
   });
 });
