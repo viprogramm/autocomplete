@@ -6,15 +6,6 @@ import sinon from "sinon";
 import List from "../List/List";
 import DefaultValueComponent from "../DefaultValueComponent/DefaultValueComponent";
 
-const data = ["etc", "eth", "btc"];
-
-const getItems = value => {
-  if (!value) {
-    return [];
-  }
-  return data.filter(v => v.includes(value));
-};
-
 jest.useFakeTimers();
 
 describe("Autocomplete component", () => {
